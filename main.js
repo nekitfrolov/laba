@@ -12,9 +12,20 @@ $(function(){
 	App.Models.Task = Backbone.Model.extend({});
 	App.Views.Task = Backbone.View.extend({
 		tagName: 'li',
+		template: template('taskTemplate'),
 		render: function (){
-			this.$el.html( this.model.get('title') );
+			   var template = this.template(this.model.toJSON());
+	           this.$el.html( template );
 			return this;
+		},
+		events:{
+             'click .edit': 'editTask'
+		},
+		editTask: function () {
+			//alert('Вы изминили задачу!');
+			//console.log(this.model);
+			var newTaskTitle = prompt('Как назовём задачу?', this.model.get('title'));
+			this.model.set('title', newTaskTitle);
 		}
 	});
 	
@@ -38,7 +49,7 @@ $(function(){
 		}
 	})
 	
-	var tasksCollection = new App.Collections.Task([
+	window.tasksCollection = new App.Collections.Task([
 	{
 		title: 'Сходить в магазин',
 		priority: 4
@@ -56,6 +67,6 @@ $(function(){
   
   var tasksView = new App.Views.Tasks({ collection: tasksCollection });
   
-  tasksView.render();
-  $('body').html(tasksView.el);
+
+  $('.tasks').html(tasksView.render().el);
 });
